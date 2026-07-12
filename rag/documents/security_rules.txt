@@ -1,0 +1,31 @@
+OWASP Secure Coding Guidelines
+
+1. Never store passwords, API keys or tokens directly in source code.
+
+2. Use environment variables to store secrets.
+
+3. Always validate user input before processing.
+
+4. Use parameterized SQL queries to prevent SQL Injection.
+
+5. Never execute user supplied code using eval() or exec().
+
+6. Escape user input before displaying it in HTML to prevent Cross Site Scripting (XSS).
+
+7. Implement proper authentication and authorization.
+
+8. Avoid exposing stack traces and sensitive error messages.
+
+9. Always use HTTPS for transmitting sensitive data.
+
+10. Keep dependencies updated.
+
+11. Follow the Principle of Least Privilege.
+
+12. Avoid hardcoded credentials.
+
+13. Validate uploaded file types.
+
+14. Encrypt sensitive information.
+
+15. Regularly update third-party libraries.

@@ -1,0 +1,257 @@
+/* ===========================
+   General Page
+=========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #eef2f7;
+
+    color: #333;
+
+}
+
+
+/* ===========================
+   Main Container
+=========================== */
+
+.container {
+
+    width: 80%;
+
+    max-width: 900px;
+
+    margin: 40px auto;
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+
+}
+
+
+/* ===========================
+   Headings
+=========================== */
+
+h1 {
+
+    text-align: center;
+
+    color: #1d4ed8;
+
+    margin-bottom: 10px;
+
+}
+
+
+.subtitle {
+
+    text-align: center;
+
+    color: #666;
+
+    margin-bottom: 30px;
+
+}
+
+
+/* ===========================
+   Sections
+=========================== */
+
+.section {
+
+    margin-bottom: 25px;
+
+}
+
+
+label {
+
+    display: block;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* ===========================
+   File Upload
+=========================== */
+
+input[type=file] {
+
+    width: 100%;
+
+    padding: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+}
+
+
+/* ===========================
+   Language Dropdown
+=========================== */
+
+select {
+
+    width: 100%;
+
+    padding: 10px;
+
+    border-radius: 5px;
+
+    border: 1px solid #ccc;
+
+}
+
+
+/* ===========================
+   Text Area
+=========================== */
+
+textarea {
+
+    width: 100%;
+
+    height: 300px;
+
+    resize: vertical;
+
+    padding: 15px;
+
+    border-radius: 5px;
+
+    border: 1px solid #ccc;
+
+    font-family: Consolas, monospace;
+
+    font-size: 15px;
+
+}
+
+
+/* ===========================
+   Button
+=========================== */
+
+button {
+
+    background: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 25px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+
+button:hover {
+
+    background: #1e40af;
+
+}
+
+
+/* ===========================
+   Result Cards
+=========================== */
+
+.card {
+
+    background: #f8fafc;
+
+    border-left: 6px solid #2563eb;
+
+    padding: 20px;
+
+    margin-top: 20px;
+
+    border-radius: 6px;
+
+}
+
+
+.card h2 {
+
+    margin-bottom: 10px;
+
+    color: #1d4ed8;
+
+}
+
+
+.card p {
+
+    margin: 8px 0;
+
+}
+
+
+/* ===========================
+   Code Display
+=========================== */
+
+pre {
+
+    background: #272822;
+
+    color: #f8f8f2;
+
+    padding: 15px;
+
+    border-radius: 5px;
+
+    overflow-x: auto;
+
+    white-space: pre-wrap;
+
+    word-wrap: break-word;
+
+}
+
+
+/* ===========================
+   Buttons
+=========================== */
+
+.buttons {
+
+    margin-top: 30px;
+
+    text-align: center;
+
+}
+
+
+.buttons a {
+
+    text-decoration: none;
+
+}
