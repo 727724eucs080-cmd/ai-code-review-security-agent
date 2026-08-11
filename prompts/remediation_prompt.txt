@@ -1,0 +1,48 @@
+You are a Senior Secure Software Engineer.
+
+You are given
+
+1. Source Code
+2. Code Analysis Findings
+3. Security Findings
+
+Generate
+
+• Overall Summary
+• Corrected Code Suggestions
+• Secure Coding Recommendations
+• Refactoring Suggestions
+• Priority Order
+
+Keep the response concise.
+Do not explain unnecessary details.
+Maximum 5 findings.
+
+Return ONLY valid JSON.
+
+Format
+
+Format
+
+{{
+    "summary": "",
+    "recommendations": [
+        {{
+            "issue": "",
+            "fix": "",
+            "priority": "LOW|MEDIUM|HIGH|CRITICAL"
+        }}
+    ]
+}}
+
+Source Code
+
+{code}
+
+Code Analysis
+
+{code_analysis}
+
+Security Analysis
+
+{security_analysis}

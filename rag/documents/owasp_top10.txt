@@ -1,0 +1,31 @@
+OWASP Top 10 Security Risks
+
+A01 Broken Access Control
+Users can access resources without proper authorization.
+
+A02 Cryptographic Failures
+Sensitive data is exposed due to weak encryption.
+
+A03 Injection
+Untrusted data is interpreted as commands or queries.
+
+A04 Insecure Design
+Security is not considered during system design.
+
+A05 Security Misconfiguration
+Default settings expose the application.
+
+A06 Vulnerable Components
+Outdated libraries introduce vulnerabilities.
+
+A07 Authentication Failures
+Weak authentication mechanisms allow account compromise.
+
+A08 Software Integrity Failures
+Untrusted updates or CI/CD pipelines are abused.
+
+A09 Logging and Monitoring Failures
+Attacks remain undetected.
+
+A10 Server Side Request Forgery
+Applications fetch unintended resources.

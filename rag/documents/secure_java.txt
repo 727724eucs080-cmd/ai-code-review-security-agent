@@ -1,0 +1,15 @@
+Java Secure Coding Guidelines
+
+Use PreparedStatement instead of string concatenation.
+
+Avoid hardcoded passwords.
+
+Use strong password hashing algorithms.
+
+Validate all request parameters.
+
+Avoid exposing stack traces.
+
+Implement role-based access control.
+
+Use HTTPS for all communications.

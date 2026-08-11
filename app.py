@@ -1,172 +1,97 @@
-import os
+import streamlit as st
 
-from flask import Flask, render_template, request
 
-from utils.file_handler import allowed_file
+# ==========================================================
+# PAGE CONFIGURATION
+# ==========================================================
 
-from utils.syntax_checker import (
-    check_python_syntax,
-    check_java_syntax
+st.set_page_config(
+    page_title="AI Code Review & Security Analysis",
+    page_icon="🛡️",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-app = Flask(__name__)
 
-# Folder where uploaded files are stored
-UPLOAD_FOLDER = "uploads"
-
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-@app.route("/", methods=["GET", "POST"])
-def home():
-
-    if request.method == "POST":
-
-        uploaded_file = request.files.get("codefile")
-
-        pasted_code = request.form.get("code")
-
-        language = request.form.get("language")
-
-        file_name = ""
-
-        source_code = ""
-
-        syntax_result = {
-            "language": "",
-
-            "status": "",
-
-            "message": ""
-        }
-
-        # ==================================
-        # CASE 1 : FILE UPLOAD
-        # ==================================
-
-        if uploaded_file and uploaded_file.filename != "":
-
-            if allowed_file(uploaded_file.filename):
-
-                file_name = uploaded_file.filename
-
-                save_path = os.path.join(
-
-                    app.config["UPLOAD_FOLDER"],
-
-                    file_name
-                )
-
-                uploaded_file.save(save_path)
-
-                # Read uploaded file
-
-                with open(
-
-                    save_path,
-
-                    "r",
-
-                    encoding="utf-8"
-
-                ) as file:
-
-
-                    source_code = file.read()
-
-                # Detect language from extension
-
-                if file_name.endswith(".py"):
-
-                    syntax_result = check_python_syntax(
-
-                        source_code
-                    )
-
-                elif file_name.endswith(".java"):
-
-                    syntax_result = check_java_syntax(
-
-                        source_code
-                    )
-
-            else:
-
-                syntax_result = {
-
-                    "language": "",
-
-                    "status": "Error",
-
-                    "message":
-                    "Only Python (.py) and Java (.java) files are allowed."
-
-                }
-
-        # ==================================
-        # CASE 2 : PASTE CODE
-        # ==================================
-
-        elif pasted_code and pasted_code.strip():
-
-            source_code = pasted_code
-
-            file_name = "Pasted Code"
-
-            if language == "python":
-
-                syntax_result = check_python_syntax(
-
-                    source_code
-                )
-
-            elif language == "java":
-
-                syntax_result = check_java_syntax(
-
-                    source_code
-                )
-
-            else:
-
-                syntax_result = {
-
-                    "language": "",
-
-                    "status": "Error",
-
-                    "message":
-                    "Please select a programming language."
-                }
-
-        # ==================================
-        # CASE 3 : NOTHING PROVIDED
-        # ==================================
-
-        else:
-            
-            syntax_result = {
-
-                "language": "",
-
-                "status": "Error",
-
-                "message":
-                "Please upload a file or paste code."
-            }
-
-        return render_template(
-
-            "result.html",
-
-            file_name=file_name,
-
-            syntax=syntax_result,
-
-            source_code=source_code
-        )
-    return render_template("index.html")
-
-if __name__ == "__main__":
-
-
-    app.run(debug=True)
+# ==========================================================
+# SESSION STATE
+# ==========================================================
+
+if "analysis_result" not in st.session_state:
+    st.session_state.analysis_result = None
+
+if "source_code" not in st.session_state:
+    st.session_state.source_code = ""
+
+if "detected_language" not in st.session_state:
+    st.session_state.detected_language = ""
+
+if "analysis_running" not in st.session_state:
+    st.session_state.analysis_running = False
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+
+# ==========================================================
+# PAGE DEFINITIONS
+# ==========================================================
+
+dashboard_page = st.Page(
+    "pages/Dashboard.py",
+    title="Dashboard",
+    icon="📊",
+    default=True
+)
+
+code_submission_page = st.Page(
+    "pages/Code_Submission.py",
+    title="Code Submission & Analysis",
+    icon="🔍"
+)
+
+assistant_page = st.Page(
+    "pages/Secure_Coding_Assistant.py",
+    title="Coding Assistant",
+    icon="💬"
+)
+
+reports_page = st.Page(
+    "pages/Reports.py",
+    title="Reports Generation",
+    icon="📄"
+)
+
+about_page = st.Page(
+    "pages/About.py",
+    title="About",
+    icon="ℹ️"
+)
+
+
+# ==========================================================
+# NAVIGATION
+# ==========================================================
+
+pg = st.navigation(
+    {
+        "Application": [
+            dashboard_page,
+            code_submission_page,
+            assistant_page,
+            reports_page
+        ],
+        "Information": [
+            about_page
+        ]
+    },
+    position="sidebar",
+    expanded=True
+)
+
+
+# ==========================================================
+# RUN CURRENT PAGE
+# ==========================================================
+
+pg.run()

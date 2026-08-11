@@ -1,9 +1,28 @@
-flask
+streamlit>=1.38.0
 
-langchain
+langchain>=0.3.0
+langgraph>=0.2.0
+langchain-google-genai>=2.0.0
 
-langchain-community
+google-generativeai>=0.8.0
 
-faiss-cpu
+faiss-cpu>=1.8.0
 
-sentence-transformers
+sentence-transformers>=3.0.0
+huggingface-hub>=0.24.0
+
+pypdf>=5.0.0
+
+plotly>=5.24.0
+
+reportlab>=4.2.0
+
+python-dotenv>=1.0.1
+
+bandit>=1.7.10
+
+ruff>=0.6.9
+
+javalang>=0.13.0
+
+pydantic>=2.9.0

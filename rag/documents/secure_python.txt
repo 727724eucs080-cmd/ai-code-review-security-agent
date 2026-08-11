@@ -1,0 +1,17 @@
+Python Secure Coding Guidelines
+
+Avoid eval() and exec().
+
+Use parameterized queries when accessing databases.
+
+Store secrets in environment variables.
+
+Validate all user inputs.
+
+Use bcrypt for password hashing.
+
+Never disable SSL verification.
+
+Avoid pickle for untrusted data.
+
+Keep third-party packages updated.

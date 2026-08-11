@@ -1,36 +1,49 @@
-"""
-chunker.py
+def split_documents(
+    text,
+    chunk_size=300,
+    overlap=50
+):
 
-Splits large documents into smaller chunks for embedding.
-"""
+    if not text or not text.strip():
+        return []
 
+    if chunk_size <= 0:
+        raise ValueError(
+            "chunk_size must be greater than 0."
+        )
 
-def split_documents(text, chunk_size=100):
-    """
-    Splits text into chunks of approximately 'chunk_size' words.
+    if overlap < 0:
+        raise ValueError(
+            "overlap cannot be negative."
+        )
 
-    Parameters
-    ----------
-    text : str
-        Input document text.
+    if overlap >= chunk_size:
+        raise ValueError(
+            "overlap must be smaller than chunk_size."
+        )
 
-    chunk_size : int
-        Number of words per chunk.
-
-    Returns
-    -------
-    list
-        List of text chunks.
-    """
 
     words = text.split()
 
     chunks = []
 
-    for i in range(0, len(words), chunk_size):
+    step = chunk_size - overlap
 
-        chunk = " ".join(words[i:i + chunk_size])
 
-        chunks.append(chunk)
+    for i in range(
+        0,
+        len(words),
+        step
+    ):
+
+        chunk = " ".join(
+            words[i:i + chunk_size]
+        )
+
+        if chunk.strip():
+
+            chunks.append(chunk)
+
 
     return chunks
+
