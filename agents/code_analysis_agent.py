@@ -2,7 +2,7 @@ import json
 
 from langchain_core.prompts import PromptTemplate
 
-from tools.ollama_tool import OllamaTool
+from tools.gemini_tool import GeminiTool
 from tools.pylint_tool import PylintTool
 
 
@@ -46,33 +46,74 @@ class CodeAnalysisAgent:
             code=code,
 
             pylint_report=json.dumps(
-
                 pylint_report,
                 separators=(",", ":")
-
             )
 
         )
 
-        response = OllamaTool.generate(prompt)
+        # -------------------------
+        # Structured Gemini Output
+        # -------------------------
 
-        response = response.replace("```json", "")
-        response = response.replace("```", "")
+        schema = {
+            "type": "object",
+            "properties": {
+                "summary": {
+                    "type": "string"
+                },
+                "findings": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "title": {
+                                "type": "string"
+                            },
+                            "severity": {
+                                "type": "string",
+                                "enum": [
+                                    "CRITICAL",
+                                    "HIGH",
+                                    "MEDIUM",
+                                    "LOW"
+                                ]
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "recommendation": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "title",
+                            "severity",
+                            "description",
+                            "recommendation"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "summary",
+                "findings"
+            ]
+        }
 
         try:
 
-            llm = json.loads(response)
+            llm = GeminiTool.generate_json(
+                prompt,
+                schema
+            )
 
-        except Exception:
+        except Exception as e:
 
             llm = {
-
                 "summary": "Unable to parse LLM response.",
-
                 "findings": [],
-
-                "raw_response": response
-
+                "raw_response": str(e)
             }
 
         return {

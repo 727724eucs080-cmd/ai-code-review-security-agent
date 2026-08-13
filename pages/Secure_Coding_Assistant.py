@@ -1,7 +1,7 @@
 import streamlit as st
 
 from rag.retriever import retrieve_documents
-from llm.ollama_service import ollama_service
+from llm.gemini_service import gemini_service
 
 
 # ==========================================================
@@ -413,9 +413,9 @@ ANSWER
         "Generating answer..."
     ):
 
-        answer = ollama_service.invoke(
+        answer = gemini_service.invoke(
             prompt
-        )
+    )
 
 
     # ======================================================

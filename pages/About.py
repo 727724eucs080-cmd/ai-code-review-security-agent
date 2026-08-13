@@ -31,7 +31,7 @@ along with an automatically generated Pull Request summary.
 - Python
 - LangGraph
 - LangChain
-- Ollama
+- Gemini
 - FAISS
 - Pylint
 - Bandit
@@ -42,7 +42,7 @@ along with an automatically generated Pull Request summary.
 
 ### AI Models
 
-- Qwen 2.5 Coder
+- Gemini 3.1 Flash-Lite
 
 ### Security Standards
 
