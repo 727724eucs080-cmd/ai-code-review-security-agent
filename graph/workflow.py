@@ -1,5 +1,7 @@
 import time
+
 from langgraph.graph import StateGraph, START, END
+
 from reports.report_builder import ReportBuilder
 from graph.state import AgentState
 
@@ -7,9 +9,14 @@ from validators.syntax_validator import SyntaxValidator
 
 from agents.code_analysis_agent import code_analysis_agent
 from agents.security_agent import security_agent
+from agents.finding_processor import FindingProcessor
 from agents.remediation_agent import remediation_agent
 from agents.pr_summary_agent import pr_summary_agent
 
+
+# ==========================================================
+# SYNTAX VALIDATION
+# ==========================================================
 
 def syntax_validation(state: AgentState):
 
@@ -24,85 +31,244 @@ def syntax_validation(state: AgentState):
     return state
 
 
+# ==========================================================
+# CODE QUALITY ANALYSIS
+# ==========================================================
+
 def code_analysis(state: AgentState):
 
-    if state["syntax_valid"]:
+    if not state["syntax_valid"]:
+        return state
 
-        start = time.time()
+    start = time.time()
 
-        state["code_analysis"] = code_analysis_agent.analyze(
+    state["code_analysis"] = (
+        code_analysis_agent.analyze(
             state["code"]
         )
+    )
 
-        print(
-            f"⏱ Code Analysis: {time.time() - start:.2f} seconds"
-        )
-
-    return state
-
-
-def security_analysis(state: AgentState):
-
-    if state["syntax_valid"]:
-
-        start = time.time()
-
-        state["security_analysis"] = security_agent.analyze(
-            state["code"],
-            state["language"]
-        )
-
-        print(
-            f"⏱ Security Analysis: {time.time() - start:.2f} seconds"
-        )
-
-    return state
-
-
-def remediation(state: AgentState):
-
-    if state["syntax_valid"]:
-
-        start = time.time()
-
-        state["remediation"] = remediation_agent.generate(
-            state
-        )
-
-        print(
-            f"⏱ Remediation: {time.time() - start:.2f} seconds"
-        )
-
-    return state
-
-
-def pr_summary(state: AgentState):
-
-    if state["syntax_valid"]:
-
-        start = time.time()
-
-        state["pr_summary"] = pr_summary_agent.generate(
-            state
-        )
-
-        print(
-            f"⏱ PR Summary: {time.time() - start:.2f} seconds"
-        )
-
-    return state
-
-def merge(state: AgentState):
-
-    state["final_report"] = ReportBuilder.build(
-        state
+    print(
+        f"⏱ Code Analysis: "
+        f"{time.time() - start:.2f} seconds"
     )
 
     return state
 
 
-builder = StateGraph(AgentState)
+# ==========================================================
+# SECURITY ANALYSIS
+# ==========================================================
 
+def security_analysis(state: AgentState):
+
+    if not state["syntax_valid"]:
+        return state
+
+    start = time.time()
+
+    state["security_analysis"] = (
+        security_agent.analyze(
+            state["code"],
+            state["language"]
+        )
+    )
+
+    print(
+        f"⏱ Security Analysis: "
+        f"{time.time() - start:.2f} seconds"
+    )
+
+    return state
+
+
+# ==========================================================
+# FINDING PROCESSING
+# ==========================================================
+
+def process_findings(state: AgentState):
+
+    if not state["syntax_valid"]:
+        return state
+
+    start = time.time()
+
+    result = FindingProcessor.process(
+        state.get(
+            "code_analysis",
+            {}
+        ),
+        state.get(
+            "security_analysis",
+            {}
+        )
+    )
+
+    state["findings"] = (
+        FindingProcessor.to_dicts(
+            result["findings"]
+        )
+    )
+
+    state["code_quality_findings"] = (
+        FindingProcessor.to_dicts(
+            result["code_quality_findings"]
+        )
+    )
+
+    state["security_findings"] = (
+        FindingProcessor.to_dicts(
+            result["security_findings"]
+        )
+    )
+
+    state["finding_statistics"] = (
+        result["statistics"]
+    )
+
+    print(
+        f"⏱ Finding Processing: "
+        f"{time.time() - start:.2f} seconds"
+    )
+
+    print(
+        "📋 Findings:",
+        len(state["findings"])
+    )
+
+    print(
+        "🔧 Code Quality:",
+        len(
+            state["code_quality_findings"]
+        )
+    )
+
+    print(
+        "🛡 Security:",
+        len(
+            state["security_findings"]
+        )
+    )
+
+    return state
+
+
+# ==========================================================
+# REMEDIATION
+# ==========================================================
+
+def remediation(state: AgentState):
+
+    if not state["syntax_valid"]:
+        return state
+
+    start = time.time()
+
+    state["remediation"] = (
+        remediation_agent.generate(
+            state
+        )
+    )
+
+    print(
+        f"⏱ Remediation: "
+        f"{time.time() - start:.2f} seconds"
+    )
+
+    return state
+
+
+# ==========================================================
+# FINAL REPORT
+# ==========================================================
+
+def merge(state: AgentState):
+
+    start = time.time()
+
+    state["final_report"] = (
+        ReportBuilder.build(
+            state
+        )
+    )
+
+    print(
+        f"⏱ Final Report: "
+        f"{time.time() - start:.2f} seconds"
+    )
+
+    return state
+
+
+# ==========================================================
+# PULL REQUEST SUMMARY
+# ==========================================================
+
+def pr_summary(state: AgentState):
+
+    if not state["syntax_valid"]:
+        return state
+
+    start = time.time()
+
+    state["pr_summary"] = (
+        pr_summary_agent.generate(
+            state
+        )
+    )
+
+    print(
+        f"⏱ PR Summary: "
+        f"{time.time() - start:.2f} seconds"
+    )
+
+    return state
+
+
+# ==========================================================
+# ATTACH PR SUMMARY TO FINAL REPORT
+# ==========================================================
+
+def attach_pr_summary(state: AgentState):
+
+    if not state["syntax_valid"]:
+        return state
+
+    final_report = state.get(
+        "final_report",
+        {}
+    )
+
+    if not isinstance(
+        final_report,
+        dict
+    ):
+        final_report = {}
+
+    final_report["pr_summary"] = (
+        state.get(
+            "pr_summary",
+            {}
+        )
+    )
+
+    state["final_report"] = final_report
+
+    return state
+
+
+# ==========================================================
+# BUILD LANGGRAPH WORKFLOW
+# ==========================================================
+
+builder = StateGraph(
+    AgentState
+)
+
+
+# ==========================================================
+# REGISTER NODES
+# ==========================================================
 
 builder.add_node(
     "syntax",
@@ -120,8 +286,18 @@ builder.add_node(
 )
 
 builder.add_node(
+    "process_findings",
+    process_findings
+)
+
+builder.add_node(
     "remediation",
     remediation
+)
+
+builder.add_node(
+    "merge",
+    merge
 )
 
 builder.add_node(
@@ -130,10 +306,14 @@ builder.add_node(
 )
 
 builder.add_node(
-    "merge",
-    merge
+    "attach_pr_summary",
+    attach_pr_summary
 )
 
+
+# ==========================================================
+# WORKFLOW ORDER
+# ==========================================================
 
 builder.add_edge(
     START,
@@ -152,23 +332,37 @@ builder.add_edge(
 
 builder.add_edge(
     "security",
+    "process_findings"
+)
+
+builder.add_edge(
+    "process_findings",
     "remediation"
 )
 
 builder.add_edge(
     "remediation",
-    "summary"
-)
-
-builder.add_edge(
-    "summary",
     "merge"
 )
 
 builder.add_edge(
     "merge",
+    "summary"
+)
+
+builder.add_edge(
+    "summary",
+    "attach_pr_summary"
+)
+
+builder.add_edge(
+    "attach_pr_summary",
     END
 )
 
+
+# ==========================================================
+# COMPILE WORKFLOW
+# ==========================================================
 
 workflow = builder.compile()

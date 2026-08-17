@@ -19,14 +19,11 @@ class CodeAnalysisAgent:
             template = f.read()
 
         self.prompt = PromptTemplate(
-
             input_variables=[
                 "code",
                 "pylint_report"
             ],
-
             template=template
-
         )
 
     def analyze(self, code: str):
@@ -42,14 +39,11 @@ class CodeAnalysisAgent:
         # -------------------------
 
         prompt = self.prompt.format(
-
             code=code,
-
             pylint_report=json.dumps(
                 pylint_report,
                 separators=(",", ":")
             )
-
         )
 
         # -------------------------
@@ -84,13 +78,20 @@ class CodeAnalysisAgent:
                             },
                             "recommendation": {
                                 "type": "string"
+                            },
+                            "category": {
+                                "type": "string",
+                                "enum": [
+                                    "CODE_QUALITY"
+                                ]
                             }
                         },
                         "required": [
                             "title",
                             "severity",
                             "description",
-                            "recommendation"
+                            "recommendation",
+                            "category"
                         ]
                     }
                 }
@@ -116,12 +117,43 @@ class CodeAnalysisAgent:
                 "raw_response": str(e)
             }
 
+        # -------------------------
+        # Enforce Code Quality
+        # -------------------------
+
+        findings = llm.get(
+            "findings",
+            []
+        )
+
+        if not isinstance(
+            findings,
+            list
+        ):
+
+            findings = []
+
+        clean_findings = []
+
+        for finding in findings:
+
+            if not isinstance(
+                finding,
+                dict
+            ):
+                continue
+
+            finding["category"] = "CODE_QUALITY"
+
+            clean_findings.append(
+                finding
+            )
+
+        llm["findings"] = clean_findings
+
         return {
-
             "pylint": pylint_report,
-
             "llm": llm
-
         }
 
 
